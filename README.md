@@ -1,7 +1,7 @@
 OrthancContributed
 ==================
 
-Contributions to the Orthanc project from external contributors.
+Contributions to the Orthanc project from external developers.
 
 This public repository aims at centralizing external contributions to [Orthanc](http://www.orthanc-server.com/), the lightweight, RESTful DICOM server from the Department of medical physics of the [CHU of Liège](http://www.chuliege.be/). External contributors are invited submit their code by themselves here. Pay attention to the fact that **no code review, nor testing** is carried on this repository by the core team of Orthanc! Use these contributions at your own risk.
 
