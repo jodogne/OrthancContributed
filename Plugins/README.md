@@ -1,1 +1,1 @@
-Contributed patches to the Orthanc source distribution.
+Contributed Orthanc plugins.
