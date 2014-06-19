@@ -11,6 +11,7 @@ Organization of the folders
 * `Scripts/`: Contributed sample scripts.
   * `Scripts/Python`: Python sample scripts.
 * `Patches/`: Contributed patches to the Orthanc source distribution.
+* `Plugins/`: Contributed plugins for Orthanc.
 
 Licensing
 ---------
