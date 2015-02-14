@@ -6,7 +6,7 @@ Orthanc plugins must use the [plugin SDK](https://code.google.com/p/orthanc/sour
 
 ## Database
 
-* [PostgreSQL](https://code.google.com/p/orthanc-postgresql/): Two *official* plugins to replace the default storage area (on the filesystem) and the default SQLite index by PostgreSQL.
+* [PostgreSQL](https://code.google.com/p/orthanc-postgresql/): Two **official** plugins to replace the default storage area (on the filesystem) and the default SQLite index by PostgreSQL.
 
 ## Viewers
 
@@ -14,4 +14,4 @@ Orthanc plugins must use the [plugin SDK](https://code.google.com/p/orthanc/sour
 
 ## HTML
 
-* [ServeFolders](https://code.google.com/p/orthanc/source/browse/?name=default#hg%2FPlugins%2FSamples%2FServeFolders): This *official* plugin enables Orthanc to serve additional folders with its embedded Web server.
+* [ServeFolders](https://code.google.com/p/orthanc/source/browse/?name=default#hg%2FPlugins%2FSamples%2FServeFolders): This **official** plugin enables Orthanc to serve additional folders with its embedded Web server.
