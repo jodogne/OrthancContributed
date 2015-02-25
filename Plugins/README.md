@@ -10,6 +10,7 @@ Orthanc plugins must use the [plugin SDK](https://code.google.com/p/orthanc/sour
 
 ## Viewers
 
+* [Orthanc Web Viewer](https://code.google.com/p/orthanc-webviewer/): This *official* plugin extends Orthanc with a Web viewer of medical images.
 * [DwvExplorer](https://github.com/ivmartel/DwvExplorer): This plugin is based on [DWV](https://github.com/ivmartel/dwv/wiki) by Yves Martel.
 
 ## HTML
