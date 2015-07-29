@@ -8,10 +8,11 @@ This public repository aims at centralizing external contributions to [Orthanc](
 Organization of the folders
 ---------------------------
 
-* `Scripts/`: Contributed sample scripts.
-  * `Scripts/Python`: Python sample scripts.
+* `Links.md`: Index of various third-party contributions around the Internet.
 * `Patches/`: Contributed patches to the Orthanc source distribution.
 * `Plugins/`: Contributed plugins for Orthanc.
+* `Scripts/`: Contributed sample scripts.
+  * `Scripts/Python`: Python sample scripts.
 
 Licensing
 ---------
