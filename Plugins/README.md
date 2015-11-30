@@ -7,7 +7,8 @@ Orthanc plugins must use the [plugin SDK](https://orthanc.chu.ulg.ac.be/sdk/inde
 ## Viewers
 
 * [Orthanc Web Viewer](http://www.orthanc-server.com/static.php?page=web-viewer): This **official** plugin extends Orthanc with a Web viewer of medical images.
-* [DWV Orthanc Plugin](https://github.com/ivmartel/dwv-orthanc-plugin): This plugin is based on [dwv](https://github.com/ivmartel/dwv/wiki) by ivmartel.
+* [DWV Orthanc Plugin](https://github.com/ivmartel/dwv-orthanc-plugin): This plugin is based on [dwv](https://github.com/ivmartel/dwv/wiki) by Yves Martelli.
+* Viewer by [Emsy Chan]((https://groups.google.com/forum/#!topic/orthanc-users/EC5Z2KaM4Hs).
 
 ## DICOM
 
