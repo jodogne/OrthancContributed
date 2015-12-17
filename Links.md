@@ -1,6 +1,12 @@
 Useful Links for Orthanc
 ========================
 
+Mobile apps
+-----------
+
+ * ["Mobile DICOM viewers"](http://www.web3.lu/mobile-dicom-viewers/), post by Marco Barning testing which mobile apps for radiology are compatible with Orthanc.
+
+
 Docker
 ------
 
