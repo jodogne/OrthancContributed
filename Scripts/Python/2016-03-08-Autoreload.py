@@ -4,6 +4,7 @@
 ## Author: Aditya Panchal
 ## Date: 2016-03-08
 ## Source: https://gist.github.com/bastula/bfa34ce30ce0ee8d585e
+## Announcement: https://groups.google.com/d/msg/orthanc-users/gmvL1Fw_cR0/08-3kaaqCQAJ
 ##
 
 
