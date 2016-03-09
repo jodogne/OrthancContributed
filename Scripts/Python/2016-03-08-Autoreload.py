@@ -1,3 +1,12 @@
+##
+## Python script to reset Orthanc to reload Lua scripts when scripts are modified.
+##
+## Author: Aditya Panchal
+## Date: 2016-03-08
+## Source: https://gist.github.com/bastula/bfa34ce30ce0ee8d585e
+##
+
+
 import sys
 import time
 import logging
