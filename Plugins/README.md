@@ -12,7 +12,7 @@ Orthanc plugins must use the [plugin SDK](https://orthanc.chu.ulg.ac.be/sdk/inde
 
 ## DICOM
 
-* [DICOM Web](http://www.orthanc-server.com/static.php?page=dicomweb): This **official** plugin extends Orthanc with support of the [DICOM Web protocols](http://medical.nema.org/medical/dicom/current/output/html/part18.html). More precisely, the plugin introduces a basic, reference implementation of WADO-RS, QIDO-RS and STOW-RS, following DICOM PS3.18 2015a.
+* [DICOMweb](http://www.orthanc-server.com/static.php?page=dicomweb): This **official** plugin extends Orthanc with support of the [DICOMweb protocols](https://en.wikipedia.org/wiki/DICOMweb). More precisely, the plugin introduces a basic, reference implementation of WADO-RS, QIDO-RS and STOW-RS, following [DICOM PS3.18](http://medical.nema.org/medical/dicom/current/output/html/part18.html).
 
 ## Database
 
