@@ -13,6 +13,7 @@ Orthanc plugins must use the [plugin SDK](https://orthanc.chu.ulg.ac.be/sdk/inde
 ## DICOM
 
 * [DICOMweb](http://www.orthanc-server.com/static.php?page=dicomweb): This **official** plugin extends Orthanc with support of the [DICOMweb protocols](https://en.wikipedia.org/wiki/DICOMweb). More precisely, the plugin introduces a basic, reference implementation of WADO-URI, WADO-RS, QIDO-RS and STOW-RS, following [DICOM PS3.18](http://medical.nema.org/medical/dicom/current/output/html/part18.html).
+* [Modality worklists](https://bitbucket.org/sjodogne/orthanc/src/default/Plugins/Samples/ModalityWorklists/): This **official** plugin turns Orthanc into a server of DICOM worklists. The worklists must be provided in some folder of the filesystem by an external script. The support of DICOM worklists in Orthanc is explained in the [FAQ of the Orthanc Book](https://orthanc.chu.ulg.ac.be/book/faq/worklist.html).
 
 ## Database
 
