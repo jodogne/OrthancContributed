@@ -1,8 +1,10 @@
 # Contributed Orthanc plugins
 
+Information about this folder can now be found in the [Orthanc Book](http://book.orthanc-server.com/developers/creating-plugins.html).
+
 ## General information
 
-Orthanc plugins must use the [plugin SDK](https://orthanc.chu.ulg.ac.be/sdk/index.html) and must be written in C or C++. They must also fullfil the terms of the [GPLv3 license](http://www.gnu.org/licenses/quick-guide-gplv3.en.html). Sample code for plugins can be found [in the official Orthanc repository](https://bitbucket.org/sjodogne/orthanc/src/default/Plugins/Samples/) (in the `Plugins/Samples` folder of the `plugins` branch). A tutorial showing how to implement a basic WADO server is [available on CodeProject](http://codeproject.com/Articles/797118/Implementing-a-WADO-Server-using-Orthanc).
+Orthanc plugins must use the [plugin SDK](http://sdk.orthanc-server.com/) and must be written in C or C++. They must also fullfil the terms of the [GPLv3 license](http://www.gnu.org/licenses/quick-guide-gplv3.en.html). Sample code for plugins can be found [in the official Orthanc repository](https://bitbucket.org/sjodogne/orthanc/src/default/Plugins/Samples/) (in the `Plugins/Samples` folder of the `plugins` branch). A tutorial showing how to implement a basic WADO server is [available on CodeProject](http://codeproject.com/Articles/797118/Implementing-a-WADO-Server-using-Orthanc).
 
 ## Viewers
 
