@@ -1,0 +1,38 @@
+Orthanc plug-in for VPI Reveal
+==============================
+
+General Information
+-------------------
+
+This directory contains software to build and use the Orthanc-VPI Plugin.
+The use of the plugin is extensively described in Orthanc-VPI Manual.pdf.
+
+The software is supplied as-is for the benefit of developers that wish to create
+an Orthanc plugin.
+
+Dependencies
+------------
+
+The Orthanc-VPI Plugin requires Orthanc to run, however Orthanc does not have to be built
+to run the plugin. It does refer to some Orthan software, and this has ben provided.
+
+Building
+--------
+
+Building has been done on Windows 8.1 and used:
+- Visual Studio 2015
+- CMake 3.5.1
+
+Use CMake on CMakeLists.txt at the top level to generate make files for Visual Studio.
+Build in Visual Studio to produce the DLL.
+
+Installation and usage
+----------------------
+
+Modify the Orthanc configuration file to find the DLL.
+Read Orthanc-VPI Manual.pdf for more details.
+
+Licensing
+---------
+
+The Orthanc-VPI Plugin is licensed under the AGPL license.
