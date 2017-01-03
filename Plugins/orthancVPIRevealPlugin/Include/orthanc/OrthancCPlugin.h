@@ -116,7 +116,7 @@
 #endif
 
 #define ORTHANC_PLUGINS_MINIMAL_MAJOR_NUMBER     1
-#define ORTHANC_PLUGINS_MINIMAL_MINOR_NUMBER     1
+#define ORTHANC_PLUGINS_MINIMAL_MINOR_NUMBER     2
 #define ORTHANC_PLUGINS_MINIMAL_REVISION_NUMBER  0
 
 
@@ -191,7 +191,7 @@ extern "C"
     OrthancPluginErrorCode_Plugin = 1    /*!< Error encountered within the plugin engine */,
     OrthancPluginErrorCode_NotImplemented = 2    /*!< Not implemented yet */,
     OrthancPluginErrorCode_ParameterOutOfRange = 3    /*!< Parameter out of range */,
-    OrthancPluginErrorCode_NotEnoughMemory = 4    /*!< Not enough memory */,
+    OrthancPluginErrorCode_NotEnoughMemory = 4    /*!< The server hosting Orthanc is running out of memory */,
     OrthancPluginErrorCode_BadParameterType = 5    /*!< Bad type for a parameter */,
     OrthancPluginErrorCode_BadSequenceOfCalls = 6    /*!< Bad sequence of calls */,
     OrthancPluginErrorCode_InexistentItem = 7    /*!< Accessing an inexistent item */,
@@ -222,6 +222,7 @@ extern "C"
     OrthancPluginErrorCode_StorageAreaPlugin = 32    /*!< Error in the plugin implementing a custom storage area */,
     OrthancPluginErrorCode_EmptyRequest = 33    /*!< The request is empty */,
     OrthancPluginErrorCode_NotAcceptable = 34    /*!< Cannot send a response which is acceptable according to the Accept HTTP header */,
+    OrthancPluginErrorCode_NullPointer = 35    /*!< Cannot handle a NULL pointer */,
     OrthancPluginErrorCode_SQLiteNotOpened = 1000    /*!< SQLite: The database is not opened */,
     OrthancPluginErrorCode_SQLiteAlreadyOpened = 1001    /*!< SQLite: Connection is already open */,
     OrthancPluginErrorCode_SQLiteCannotOpen = 1002    /*!< SQLite: Unable to open the database */,
@@ -407,6 +408,7 @@ extern "C"
     _OrthancPluginService_LookupDictionary = 26,
     _OrthancPluginService_CallHttpClient2 = 27,
     _OrthancPluginService_GenerateUuid = 28,
+    _OrthancPluginService_RegisterPrivateDictionaryTag = 29,
 
     /* Registration of callbacks */
     _OrthancPluginService_RegisterRestCallback = 1000,
@@ -499,6 +501,9 @@ extern "C"
     _OrthancPluginService_GetFindQueryTag = 7007,
     _OrthancPluginService_GetFindQueryTagName = 7008,
     _OrthancPluginService_GetFindQueryValue = 7009,
+    _OrthancPluginService_CreateFindMatcher = 7010,
+    _OrthancPluginService_FreeFindMatcher = 7011,
+    _OrthancPluginService_FindMatcherIsMatch = 7012,
 
     _OrthancPluginService_INTERNAL = 0x7fffffff
   } _OrthancPluginService;
@@ -712,6 +717,7 @@ extern "C"
    **/
   typedef enum
   {
+    OrthancPluginDicomToJsonFlags_None                  = 0,
     OrthancPluginDicomToJsonFlags_IncludeBinary         = (1 << 0),  /*!< Include the binary tags */
     OrthancPluginDicomToJsonFlags_IncludePrivateTags    = (1 << 1),  /*!< Include the private tags */
     OrthancPluginDicomToJsonFlags_IncludeUnknownTags    = (1 << 2),  /*!< Include the tags unknown by the dictionary */
@@ -730,6 +736,7 @@ extern "C"
    **/
   typedef enum
   {
+    OrthancPluginCreateDicomFlags_None                  = 0,
     OrthancPluginCreateDicomFlags_DecodeDataUriScheme   = (1 << 0),  /*!< Decode fields encoded using data URI scheme */
     OrthancPluginCreateDicomFlags_GenerateIdentifiers   = (1 << 1),  /*!< Automatically generate DICOM identifiers */
 
@@ -850,6 +857,14 @@ extern "C"
    * @ingroup DicomCallbacks
    **/
   typedef struct _OrthancPluginFindAnswers_t OrthancPluginFindAnswers;
+
+
+
+  /**
+   * @brief Opaque structure to an object that can be used to check whether a DICOM instance matches a C-Find query.
+   * @ingroup Toolbox
+   **/
+  typedef struct _OrthancPluginFindAnswers_t OrthancPluginFindMatcher;
 
 
 
@@ -1044,18 +1059,20 @@ extern "C"
    * @param resourceType The type of the resource of interest. Note
    * that this might be set to ResourceType_None if the
    * QueryRetrieveLevel (0008,0052) tag was not provided by the
-   * issuer.
+   * issuer (i.e. the originator modality).
    * @param patientId Content of the PatientID (0x0010, 0x0020) tag of the resource of interest. Might be NULL.
    * @param accessionNumber Content of the AccessionNumber (0x0008, 0x0050) tag. Might be NULL.
    * @param studyInstanceUid Content of the StudyInstanceUID (0x0020, 0x000d) tag. Might be NULL.
    * @param seriesInstanceUid Content of the SeriesInstanceUID (0x0020, 0x000e) tag. Might be NULL.
    * @param sopInstanceUid Content of the SOPInstanceUID (0x0008, 0x0018) tag. Might be NULL.
-   * @param issuerAet The Application Entity Title (AET) of the
+   * @param originatorAet The Application Entity Title (AET) of the
    * modality from which the request originates.
    * @param sourceAet The Application Entity Title (AET) of the
    * modality that should send its DICOM files to another modality.
    * @param targetAet The Application Entity Title (AET) of the
    * modality that should receive the DICOM files.
+   * @param originatorId The Message ID issued by the originator modality,
+   * as found in tag (0000,0110) of the DICOM query emitted by the issuer.
    *
    * @return The NULL value if the plugin cannot deal with this query,
    * or a pointer to the driver object that is responsible for
@@ -1071,10 +1088,10 @@ extern "C"
     const char*                studyInstanceUid,
     const char*                seriesInstanceUid,
     const char*                sopInstanceUid,
-    const char*                issuerAet,
+    const char*                originatorAet,
     const char*                sourceAet,
     const char*                targetAet,
-    uint16_t                   moveOriginatorId);
+    uint16_t                   originatorId);
     
 
   /**
@@ -4091,9 +4108,9 @@ extern "C"
   /**
    * @brief Register a new tag into the DICOM dictionary.
    *
-   * This function declares a new tag in the dictionary of DICOM tags
-   * that are known to Orthanc. This function should be used in the
-   * OrthancPluginInitialize() callback.
+   * This function declares a new public tag in the dictionary of
+   * DICOM tags that are known to Orthanc. This function should be
+   * used in the OrthancPluginInitialize() callback.
    *
    * @param context The Orthanc plugin context, as received by OrthancPluginInitialize().
    * @param group The group of the tag.
@@ -4104,6 +4121,7 @@ extern "C"
    * @param maxMultiplicity The maximum multiplicity of the tag. A value of 0 means
    * an arbitrary multiplicity ("<tt>n</tt>").
    * @return 0 if success, other value if error.
+   * @see OrthancPluginRegisterPrivateDictionaryTag()
    * @ingroup Toolbox
    **/
   ORTHANC_PLUGIN_INLINE OrthancPluginErrorCode  OrthancPluginRegisterDictionaryTag(
@@ -4126,6 +4144,60 @@ extern "C"
     return context->InvokeService(context, _OrthancPluginService_RegisterDictionaryTag, &params);
   }
 
+
+
+  typedef struct
+  {
+    uint16_t                          group;
+    uint16_t                          element;
+    OrthancPluginValueRepresentation  vr;
+    const char*                       name;
+    uint32_t                          minMultiplicity;
+    uint32_t                          maxMultiplicity;
+    const char*                       privateCreator;
+  } _OrthancPluginRegisterPrivateDictionaryTag;
+  
+  /**
+   * @brief Register a new private tag into the DICOM dictionary.
+   *
+   * This function declares a new private tag in the dictionary of
+   * DICOM tags that are known to Orthanc. This function should be
+   * used in the OrthancPluginInitialize() callback.
+   *
+   * @param context The Orthanc plugin context, as received by OrthancPluginInitialize().
+   * @param group The group of the tag.
+   * @param element The element of the tag.
+   * @param vr The value representation of the tag.
+   * @param name The nickname of the tag.
+   * @param minMultiplicity The minimum multiplicity of the tag (must be above 0).
+   * @param maxMultiplicity The maximum multiplicity of the tag. A value of 0 means
+   * an arbitrary multiplicity ("<tt>n</tt>").
+   * @param privateCreator The private creator of this private tag.
+   * @return 0 if success, other value if error.
+   * @see OrthancPluginRegisterDictionaryTag()
+   * @ingroup Toolbox
+   **/
+  ORTHANC_PLUGIN_INLINE OrthancPluginErrorCode  OrthancPluginRegisterPrivateDictionaryTag(
+    OrthancPluginContext*             context,
+    uint16_t                          group,
+    uint16_t                          element,
+    OrthancPluginValueRepresentation  vr,
+    const char*                       name,
+    uint32_t                          minMultiplicity,
+    uint32_t                          maxMultiplicity,
+    const char*                       privateCreator)
+  {
+    _OrthancPluginRegisterPrivateDictionaryTag params;
+    params.group = group;
+    params.element = element;
+    params.vr = vr;
+    params.name = name;
+    params.minMultiplicity = minMultiplicity;
+    params.maxMultiplicity = maxMultiplicity;
+    params.privateCreator = privateCreator;
+
+    return context->InvokeService(context, _OrthancPluginService_RegisterPrivateDictionaryTag, &params);
+  }
 
 
 
@@ -5354,6 +5426,123 @@ extern "C"
   }
 
 
+
+  typedef struct
+  {
+    OrthancPluginFindMatcher** target;
+    const void*                query;
+    uint32_t                   size;
+  } _OrthancPluginCreateFindMatcher;
+
+
+  /**
+   * @brief Create a C-Find matcher.
+   *
+   * This function creates a "matcher" object that can be used to
+   * check whether a DICOM instance matches a C-Find query. The C-Find
+   * query must be expressed as a DICOM buffer.
+   *
+   * @param context The Orthanc plugin context, as received by OrthancPluginInitialize().
+   * @param query The C-Find DICOM query.
+   * @param size The size of the DICOM query.
+   * @return The newly allocated matcher. It must be freed with OrthancPluginFreeFindMatcher().
+   * @ingroup Toolbox
+   **/
+  ORTHANC_PLUGIN_INLINE OrthancPluginFindMatcher* OrthancPluginCreateFindMatcher(
+    OrthancPluginContext*  context,
+    const void*            query,
+    uint32_t               size)
+  {
+    OrthancPluginFindMatcher* target = NULL;
+
+    _OrthancPluginCreateFindMatcher params;
+    memset(&params, 0, sizeof(params));
+    params.target = &target;
+    params.query = query;
+    params.size = size;
+
+    if (context->InvokeService(context, _OrthancPluginService_CreateFindMatcher, &params) != OrthancPluginErrorCode_Success)
+    {
+      return NULL;
+    }
+    else
+    {
+      return target;
+    }
+  }
+
+
+  typedef struct
+  {
+    OrthancPluginFindMatcher*   matcher;
+  } _OrthancPluginFreeFindMatcher;
+
+  /**
+   * @brief Free a C-Find matcher.
+   *
+   * This function frees a matcher that was created using OrthancPluginCreateFindMatcher().
+   *
+   * @param context The Orthanc plugin context, as received by OrthancPluginInitialize().
+   * @param matcher The matcher of interest.
+   * @ingroup Toolbox
+   **/
+  ORTHANC_PLUGIN_INLINE void  OrthancPluginFreeFindMatcher(
+    OrthancPluginContext*     context, 
+    OrthancPluginFindMatcher* matcher)
+  {
+    _OrthancPluginFreeFindMatcher params;
+    params.matcher = matcher;
+
+    context->InvokeService(context, _OrthancPluginService_FreeFindMatcher, &params);
+  }
+
+
+  typedef struct
+  {
+    const OrthancPluginFindMatcher*  matcher;
+    const void*                      dicom;
+    uint32_t                         size;
+    int32_t*                         isMatch;
+  } _OrthancPluginFindMatcherIsMatch;
+
+  /**
+   * @brief Test whether a DICOM instance matches a C-Find query.
+   *
+   * This function checks whether one DICOM instance matches C-Find
+   * matcher that was previously allocated using
+   * OrthancPluginCreateFindMatcher().
+   *
+   * @param context The Orthanc plugin context, as received by OrthancPluginInitialize().
+   * @param matcher The matcher of interest.
+   * @param dicom The DICOM instance to be matched.
+   * @param size The size of the DICOM instance.
+   * @return 1 if the DICOM instance matches the query, 0 otherwise.
+   * @ingroup Toolbox
+   **/
+  ORTHANC_PLUGIN_INLINE int32_t  OrthancPluginFindMatcherIsMatch(
+    OrthancPluginContext*            context,
+    const OrthancPluginFindMatcher*  matcher,
+    const void*                      dicom,
+    uint32_t                         size)
+  {
+    int32_t isMatch = 0;
+
+    _OrthancPluginFindMatcherIsMatch params;
+    params.matcher = matcher;
+    params.dicom = dicom;
+    params.size = size;
+    params.isMatch = &isMatch;
+
+    if (context->InvokeService(context, _OrthancPluginService_FindMatcherIsMatch, &params) == OrthancPluginErrorCode_Success)
+    {
+      return isMatch;
+    }
+    else
+    {
+      /* Error: Assume non-match */
+      return 0;
+    }
+  }
 
 
 #ifdef  __cplusplus

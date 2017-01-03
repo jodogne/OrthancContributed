@@ -13,8 +13,8 @@ an Orthanc plugin.
 Dependencies
 ------------
 
-The Orthanc-VPI Plugin requires Orthanc to run, however Orthanc does not have to be built
-to run the plugin. It does refer to some Orthan software, and this has ben provided.
+The Orthanc-VPI Plugin requires Orthanc 1.2.0 to run, however Orthanc does not have to be built
+to run the plugin. It does refer to some Orthanc software, and this has been provided.
 
 Building
 --------
