@@ -37,9 +37,18 @@
 #include <boost/lexical_cast.hpp>
 #include <json/value.h>
 
-#if HAS_ORTHANC_EXCEPTION == 1
-#  include <OrthancException.h>
+#if !defined(HAS_ORTHANC_EXCEPTION)
+#  error The macro HAS_ORTHANC_EXCEPTION must be defined
 #endif
+
+
+#if HAS_ORTHANC_EXCEPTION == 1
+#  include "../../../Core/OrthancException.h"
+#  define ORTHANC_PLUGINS_THROW_EXCEPTION(code)  throw ::Orthanc::OrthancException(static_cast<Orthanc::ErrorCode>(code))
+#else
+#  define ORTHANC_PLUGINS_THROW_EXCEPTION(code)  throw ::OrthancPlugins::PluginException(code)
+#endif
+
 
 
 namespace OrthancPlugins
@@ -48,7 +57,10 @@ namespace OrthancPlugins
                                 const char* url,
                                 const OrthancPluginHttpRequest* request);
 
+  const char* GetErrorDescription(OrthancPluginContext* context,
+                                  OrthancPluginErrorCode code);
 
+#if HAS_ORTHANC_EXCEPTION == 0
   class PluginException
   {
   private:
@@ -64,8 +76,14 @@ namespace OrthancPlugins
       return code_;
     }
 
-    const char* GetErrorDescription(OrthancPluginContext* context) const;
+    const char* What(OrthancPluginContext* context) const
+    {
+      return ::OrthancPlugins::GetErrorDescription(context, code_);
+    }
+
+    static void Check(OrthancPluginErrorCode code);
   };
+#endif
 
 
   class MemoryBuffer : public boost::noncopyable
@@ -73,6 +91,8 @@ namespace OrthancPlugins
   private:
     OrthancPluginContext*      context_;
     OrthancPluginMemoryBuffer  buffer_;
+
+    void Check(OrthancPluginErrorCode code);
 
   public:
     MemoryBuffer(OrthancPluginContext* context);
@@ -127,6 +147,14 @@ namespace OrthancPlugins
                     bool applyPlugins);
 
     bool RestApiPost(const std::string& uri,
+                     const Json::Value& body,
+                     bool applyPlugins);
+
+    bool RestApiPut(const std::string& uri,
+                    const Json::Value& body,
+                    bool applyPlugins);
+
+    bool RestApiPost(const std::string& uri,
                      const std::string& body,
                      bool applyPlugins)
     {
@@ -139,6 +167,18 @@ namespace OrthancPlugins
     {
       return RestApiPut(uri, body.empty() ? NULL : body.c_str(), body.size(), applyPlugins);
     }
+
+    void CreateDicom(const Json::Value& tags,
+                     OrthancPluginCreateDicomFlags flags);
+
+    void ReadFile(const std::string& path);
+
+    void GetDicomQuery(const OrthancPluginWorklistQuery* query);
+
+    void DicomToJson(Json::Value& target,
+                     OrthancPluginDicomToJsonFormat format,
+                     OrthancPluginDicomToJsonFlags flags,
+                     uint32_t maxStringLength);
   };
 
 
@@ -148,16 +188,23 @@ namespace OrthancPlugins
     OrthancPluginContext*  context_;
     char*                  str_;
 
+    void Clear();
+
   public:
-    OrthancString(OrthancPluginContext* context,
-                  char* str);
+    OrthancString(OrthancPluginContext* context) :
+      context_(context),
+      str_(NULL)
+    {
+    }
 
     ~OrthancString()
     {
       Clear();
     }
 
-    void Clear();
+    // This transfers ownership, warning: The string must have been
+    // allocated by the Orthanc core
+    void Assign(char* str);
 
     const char* GetContent() const
     {
@@ -174,7 +221,7 @@ namespace OrthancPlugins
   {
   private:
     OrthancPluginContext*  context_;
-    Json::Value            configuration_;
+    Json::Value            configuration_;  // Necessarily a Json::objectValue
     std::string            path_;
 
     std::string GetPath(const std::string& key) const;
@@ -192,6 +239,8 @@ namespace OrthancPlugins
     {
       return configuration_;
     }
+
+    bool IsSection(const std::string& key) const;
 
     void GetSection(OrthancConfiguration& target,
                     const std::string& key) const;
@@ -227,7 +276,7 @@ namespace OrthancPlugins
                         float defaultValue) const;
   };
 
-  class OrthancImage
+  class OrthancImage : public boost::noncopyable
   {
   private:
     OrthancPluginContext*  context_;
@@ -285,52 +334,132 @@ namespace OrthancPlugins
   };
 
 
-  bool RestApiGetJson(Json::Value& result,
-                      OrthancPluginContext* context,
-                      const std::string& uri,
-                      bool applyPlugins);
-
-  bool RestApiPostJson(Json::Value& result,
-                       OrthancPluginContext* context,
-                       const std::string& uri,
-                       const char* body,
-                       size_t bodySize,
-                       bool applyPlugins);
-
-  bool RestApiPutJson(Json::Value& result,
-                      OrthancPluginContext* context,
-                      const std::string& uri,
-                      const char* body,
-                      size_t bodySize,
-                      bool applyPlugins);
-
-  inline bool RestApiPostJson(Json::Value& result,
-                              OrthancPluginContext* context,
-                              const std::string& uri,
-                              const std::string& body,
-                              bool applyPlugins)
+  class FindMatcher : public boost::noncopyable
   {
-    return RestApiPostJson(result, context, uri, body.empty() ? NULL : body.c_str(), 
-                           body.size(), applyPlugins);
+  private:
+    OrthancPluginContext*              context_;
+    OrthancPluginFindMatcher*          matcher_;
+    const OrthancPluginWorklistQuery*  worklist_;
+
+    void SetupDicom(OrthancPluginContext*  context,
+                    const void*            query,
+                    uint32_t               size);
+
+  public:
+    FindMatcher(OrthancPluginContext*              context,
+                const OrthancPluginWorklistQuery*  worklist);
+
+    FindMatcher(OrthancPluginContext*  context,
+                const void*            query,
+                uint32_t               size)
+    {
+      SetupDicom(context, query, size);
+    }
+
+    FindMatcher(OrthancPluginContext*  context,
+                const MemoryBuffer&    dicom)
+    {
+      SetupDicom(context, dicom.GetData(), dicom.GetSize());
+    }
+
+    ~FindMatcher();
+
+    bool IsMatch(const void*  dicom,
+                 uint32_t     size) const;
+
+    bool IsMatch(const MemoryBuffer& dicom) const
+    {
+      return IsMatch(dicom.GetData(), dicom.GetSize());
+    }
+  };
+
+
+  bool RestApiGet(Json::Value& result,
+                  OrthancPluginContext* context,
+                  const std::string& uri,
+                  bool applyPlugins);
+
+  bool RestApiPost(Json::Value& result,
+                   OrthancPluginContext* context,
+                   const std::string& uri,
+                   const char* body,
+                   size_t bodySize,
+                   bool applyPlugins);
+
+  bool RestApiPost(Json::Value& result,
+                   OrthancPluginContext* context,
+                   const std::string& uri,
+                   const Json::Value& body,
+                   bool applyPlugins);
+
+  inline bool RestApiPost(Json::Value& result,
+                          OrthancPluginContext* context,
+                          const std::string& uri,
+                          const std::string& body,
+                          bool applyPlugins)
+  {
+    return RestApiPost(result, context, uri, body.empty() ? NULL : body.c_str(), 
+                       body.size(), applyPlugins);
+  }
+
+  bool RestApiPut(Json::Value& result,
+                  OrthancPluginContext* context,
+                  const std::string& uri,
+                  const char* body,
+                  size_t bodySize,
+                  bool applyPlugins);
+
+  bool RestApiPut(Json::Value& result,
+                  OrthancPluginContext* context,
+                  const std::string& uri,
+                  const Json::Value& body,
+                  bool applyPlugins);
+
+  inline bool RestApiPut(Json::Value& result,
+                         OrthancPluginContext* context,
+                         const std::string& uri,
+                         const std::string& body,
+                         bool applyPlugins)
+  {
+    return RestApiPut(result, context, uri, body.empty() ? NULL : body.c_str(), 
+                      body.size(), applyPlugins);
   }
 
   bool RestApiDelete(OrthancPluginContext* context,
                      const std::string& uri,
                      bool applyPlugins);
 
-  inline bool RestApiPutJson(Json::Value& result,
-                             OrthancPluginContext* context,
-                             const std::string& uri,
-                             const std::string& body,
-                             bool applyPlugins)
+  inline void LogError(OrthancPluginContext* context,
+                       const std::string& message)
   {
-    return RestApiPutJson(result, context, uri, body.empty() ? NULL : body.c_str(), 
-                          body.size(), applyPlugins);
+    if (context != NULL)
+    {
+      OrthancPluginLogError(context, message.c_str());
+    }
   }
 
-  bool RestApiDelete(OrthancPluginContext* context,
-                     const std::string& uri,
-                     bool applyPlugins);
+  inline void LogWarning(OrthancPluginContext* context,
+                         const std::string& message)
+  {
+    if (context != NULL)
+    {
+      OrthancPluginLogWarning(context, message.c_str());
+    }
+  }
+
+  inline void LogInfo(OrthancPluginContext* context,
+                      const std::string& message)
+  {
+    if (context != NULL)
+    {
+      OrthancPluginLogInfo(context, message.c_str());
+    }
+  }
+
+  bool CheckMinimalOrthancVersion(OrthancPluginContext* context,
+                                  unsigned int major,
+                                  unsigned int minor,
+                                  unsigned int revision);
 
 
   namespace Internals
@@ -345,17 +474,18 @@ namespace OrthancPlugins
         Callback(output, url, request);
         return OrthancPluginErrorCode_Success;
       }
-      catch (OrthancPlugins::PluginException& e)
-      {
-        return e.GetErrorCode();
-      }
 #if HAS_ORTHANC_EXCEPTION == 1
       catch (Orthanc::OrthancException& e)
       {
         return static_cast<OrthancPluginErrorCode>(e.GetErrorCode());
       }
+#else
+      catch (OrthancPlugins::PluginException& e)
+      {
+        return e.GetErrorCode();
+      }
 #endif
-      catch (boost::bad_lexical_cast& e)
+      catch (boost::bad_lexical_cast&)
       {
         return OrthancPluginErrorCode_BadFileFormat;
       }

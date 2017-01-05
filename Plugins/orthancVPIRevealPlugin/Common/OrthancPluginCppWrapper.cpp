@@ -33,13 +33,15 @@
 #include "OrthancPluginCppWrapper.h"
 
 #include <json/reader.h>
+#include <json/writer.h>
 
 
 namespace OrthancPlugins
 {
-  const char* PluginException::GetErrorDescription(OrthancPluginContext* context) const
+  const char* GetErrorDescription(OrthancPluginContext* context,
+                                  OrthancPluginErrorCode code)
   {
-    const char* description = OrthancPluginGetErrorDescription(context, code_);
+    const char* description = OrthancPluginGetErrorDescription(context, code);
     if (description)
     {
       return description;
@@ -47,6 +49,29 @@ namespace OrthancPlugins
     else
     {
       return "No description available";
+    }
+  }
+
+  
+#if HAS_ORTHANC_EXCEPTION == 0
+  void PluginException::Check(OrthancPluginErrorCode code)
+  {
+    if (code != OrthancPluginErrorCode_Success)
+    {
+      ORTHANC_PLUGINS_THROW_EXCEPTION(code);
+    }
+  }
+#endif
+
+
+  void MemoryBuffer::Check(OrthancPluginErrorCode code)
+  {
+    if (code != OrthancPluginErrorCode_Success)
+    {
+      // Prevent using garbage information
+      buffer_.data = NULL;
+      buffer_.size = 0;
+      ORTHANC_PLUGINS_THROW_EXCEPTION(code);
     }
   }
 
@@ -100,7 +125,7 @@ namespace OrthancPlugins
     if (buffer_.data == NULL ||
         buffer_.size == 0)
     {
-      throw PluginException(OrthancPluginErrorCode_InternalError);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
     }
 
     const char* tmp = reinterpret_cast<const char*>(buffer_.data);
@@ -109,7 +134,7 @@ namespace OrthancPlugins
     if (!reader.parse(tmp, tmp + buffer_.size, target))
     {
       OrthancPluginLogError(context_, "Cannot convert some memory buffer to JSON");
-      throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
   }
 
@@ -141,7 +166,7 @@ namespace OrthancPlugins
     }
     else
     {
-      throw PluginException(error);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(error);
     }
   }
 
@@ -175,7 +200,7 @@ namespace OrthancPlugins
     }
     else
     {
-      throw PluginException(error);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(error);
     }
   }
 
@@ -209,16 +234,66 @@ namespace OrthancPlugins
     }
     else
     {
-      throw PluginException(error);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(error);
     }
   }
 
 
-  OrthancString::OrthancString(OrthancPluginContext* context,
-                               char* str) :
-    context_(context),
-    str_(str)
+  bool MemoryBuffer::RestApiPost(const std::string& uri,
+                                 const Json::Value& body,
+                                 bool applyPlugins)
   {
+    Json::FastWriter writer;
+    return RestApiPost(uri, writer.write(body), applyPlugins);
+  }
+
+
+  bool MemoryBuffer::RestApiPut(const std::string& uri,
+                                const Json::Value& body,
+                                bool applyPlugins)
+  {
+    Json::FastWriter writer;
+    return RestApiPut(uri, writer.write(body), applyPlugins);
+  }
+
+
+  void MemoryBuffer::CreateDicom(const Json::Value& tags,
+                                 OrthancPluginCreateDicomFlags flags)
+  {
+    Clear();
+
+    Json::FastWriter writer;
+    std::string s = writer.write(tags);
+    
+    Check(OrthancPluginCreateDicom(context_, &buffer_, s.c_str(), NULL, flags));
+  }
+
+
+  void MemoryBuffer::ReadFile(const std::string& path)
+  {
+    Clear();
+    Check(OrthancPluginReadFile(context_, &buffer_, path.c_str()));
+  }
+
+
+  void MemoryBuffer::GetDicomQuery(const OrthancPluginWorklistQuery* query)
+  {
+    Clear();
+    Check(OrthancPluginWorklistGetDicomQuery(context_, &buffer_, query));
+  }
+
+
+  void OrthancString::Assign(char* str)
+  {
+    if (str == NULL)
+    {
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
+    }
+    else
+    {
+      Clear();
+      str_ = str;
+    }
   }
 
 
@@ -250,27 +325,40 @@ namespace OrthancPlugins
     if (str_ == NULL)
     {
       OrthancPluginLogError(context_, "Cannot convert an empty memory buffer to JSON");
-      throw PluginException(OrthancPluginErrorCode_InternalError);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
     }
 
     Json::Reader reader;
     if (!reader.parse(str_, target))
     {
       OrthancPluginLogError(context_, "Cannot convert some memory buffer to JSON");
-      throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
   }
+
+  
+  void MemoryBuffer::DicomToJson(Json::Value& target,
+                                 OrthancPluginDicomToJsonFormat format,
+                                 OrthancPluginDicomToJsonFlags flags,
+                                 uint32_t maxStringLength)
+  {
+    OrthancString str(context_);
+    str.Assign(OrthancPluginDicomBufferToJson(context_, GetData(), GetSize(), format, flags, maxStringLength));
+    str.ToJson(target);
+  }
+
   
 
   OrthancConfiguration::OrthancConfiguration(OrthancPluginContext* context) : 
     context_(context)
   {
-    OrthancString str(context, OrthancPluginGetConfiguration(context));
+    OrthancString str(context);
+    str.Assign(OrthancPluginGetConfiguration(context));
 
     if (str.GetContent() == NULL)
     {
       OrthancPluginLogError(context, "Cannot access the Orthanc configuration");
-      throw PluginException(OrthancPluginErrorCode_InternalError);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
     }
 
     str.ToJson(configuration_);
@@ -278,7 +366,7 @@ namespace OrthancPlugins
     if (configuration_.type() != Json::objectValue)
     {
       OrthancPluginLogError(context, "Unable to read the Orthanc configuration");
-      throw PluginException(OrthancPluginErrorCode_InternalError);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
     }
   }
 
@@ -287,7 +375,7 @@ namespace OrthancPlugins
   {
     if (context_ == NULL)
     {
-      throw PluginException(OrthancPluginErrorCode_Plugin);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_Plugin);
     }
     else
     {
@@ -306,6 +394,15 @@ namespace OrthancPlugins
     {
       return path_ + "." + key;
     }
+  }
+
+
+  bool OrthancConfiguration::IsSection(const std::string& key) const
+  {
+    assert(configuration_.type() == Json::objectValue);
+
+    return (configuration_.isMember(key) &&
+            configuration_[key].type() == Json::objectValue);
   }
 
 
@@ -331,7 +428,7 @@ namespace OrthancPlugins
           OrthancPluginLogError(context_, s.c_str());
         }
 
-        throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+        ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
       }
 
       target.configuration_ = configuration_[key];
@@ -357,7 +454,7 @@ namespace OrthancPlugins
         OrthancPluginLogError(context_, s.c_str());
       }
 
-      throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
 
     target = configuration_[key].asString();
@@ -392,7 +489,7 @@ namespace OrthancPlugins
           OrthancPluginLogError(context_, s.c_str());
         }
 
-        throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+        ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
   }
 
@@ -414,7 +511,7 @@ namespace OrthancPlugins
         OrthancPluginLogError(context_, s.c_str());
       }
 
-      throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
     else
     {
@@ -442,7 +539,7 @@ namespace OrthancPlugins
         OrthancPluginLogError(context_, s.c_str());
       }
 
-      throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
 
     target = configuration_[key].asBool();
@@ -467,11 +564,11 @@ namespace OrthancPlugins
         return true;
         
       case Json::intValue:
-        target = configuration_[key].asInt();
+        target = static_cast<float>(configuration_[key].asInt());
         return true;
         
       case Json::uintValue:
-        target = configuration_[key].asUInt();
+        target = static_cast<float>(configuration_[key].asUInt());
         return true;
         
       default:
@@ -481,7 +578,7 @@ namespace OrthancPlugins
           OrthancPluginLogError(context_, s.c_str());
         }
 
-        throw PluginException(OrthancPluginErrorCode_BadFileFormat);
+        ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_BadFileFormat);
     }
   }
 
@@ -576,7 +673,7 @@ namespace OrthancPlugins
     if (image_ == NULL)
     {
       OrthancPluginLogError(context_, "Trying to access a NULL image");
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
   }
 
@@ -587,7 +684,7 @@ namespace OrthancPlugins
   {
     if (context == NULL)
     {
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
   }
 
@@ -599,7 +696,7 @@ namespace OrthancPlugins
   {
     if (context == NULL)
     {
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
   }
   
@@ -612,7 +709,7 @@ namespace OrthancPlugins
   {
     if (context == NULL)
     {
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
     else
     {
@@ -629,7 +726,7 @@ namespace OrthancPlugins
     if (image_ == NULL)
     {
       OrthancPluginLogError(context_, "Cannot uncompress a PNG image");
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
   }
 
@@ -642,7 +739,7 @@ namespace OrthancPlugins
     if (image_ == NULL)
     {
       OrthancPluginLogError(context_, "Cannot uncompress a JPEG image");
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
   }
 
@@ -656,7 +753,7 @@ namespace OrthancPlugins
     if (image_ == NULL)
     {
       OrthancPluginLogError(context_, "Cannot uncompress a DICOM image");
-      throw PluginException(OrthancPluginErrorCode_ParameterOutOfRange);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
     }
   }
 
@@ -738,10 +835,84 @@ namespace OrthancPlugins
   }
 
 
-  bool RestApiGetJson(Json::Value& result,
-                      OrthancPluginContext* context,
-                      const std::string& uri,
-                      bool applyPlugins)
+  FindMatcher::FindMatcher(OrthancPluginContext*              context,
+                           const OrthancPluginWorklistQuery*  worklist) :
+    context_(context),
+    matcher_(NULL),
+    worklist_(worklist)
+  {
+    if (worklist_ == NULL)
+    {
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_ParameterOutOfRange);
+    }
+  }
+
+
+  void FindMatcher::SetupDicom(OrthancPluginContext*  context,
+                               const void*            query,
+                               uint32_t               size)
+  {
+    context_ = context;
+    worklist_ = NULL;
+
+    matcher_ = OrthancPluginCreateFindMatcher(context_, query, size);
+    if (matcher_ == NULL)
+    {
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
+    }
+  }
+
+
+  FindMatcher::~FindMatcher()
+  {
+    // The "worklist_" field 
+
+    if (matcher_ != NULL)
+    {
+      OrthancPluginFreeFindMatcher(context_, matcher_);
+    }
+  }
+
+
+
+  bool FindMatcher::IsMatch(const void*  dicom,
+                            uint32_t     size) const
+  {
+    int32_t result;
+
+    if (matcher_ != NULL)
+    {
+      result = OrthancPluginFindMatcherIsMatch(context_, matcher_, dicom, size);
+    }
+    else if (worklist_ != NULL)
+    {
+      result = OrthancPluginWorklistIsMatch(context_, worklist_, dicom, size);
+    }
+    else
+    {
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
+    }
+
+    if (result == 0)
+    {
+      return false;
+    }
+    else if (result == 1)
+    {
+      return true;
+    }
+    else
+    {
+      ORTHANC_PLUGINS_THROW_EXCEPTION(OrthancPluginErrorCode_InternalError);
+    }
+  }
+
+
+
+  bool RestApiGet(Json::Value& result,
+                  OrthancPluginContext* context,
+                  const std::string& uri,
+                  bool applyPlugins)
   {
     MemoryBuffer answer(context);
     if (!answer.RestApiGet(uri, applyPlugins))
@@ -756,12 +927,12 @@ namespace OrthancPlugins
   }
 
 
-  bool RestApiPostJson(Json::Value& result,
-                       OrthancPluginContext* context,
-                       const std::string& uri,
-                       const char* body,
-                       size_t bodySize,
-                       bool applyPlugins)
+  bool RestApiPost(Json::Value& result,
+                   OrthancPluginContext* context,
+                   const std::string& uri,
+                   const char* body,
+                   size_t bodySize,
+                   bool applyPlugins)
   {
     MemoryBuffer answer(context);
     if (!answer.RestApiPost(uri, body, bodySize, applyPlugins))
@@ -776,12 +947,23 @@ namespace OrthancPlugins
   }
 
 
-  bool RestApiPutJson(Json::Value& result,
-                      OrthancPluginContext* context,
-                      const std::string& uri,
-                      const char* body,
-                      size_t bodySize,
-                      bool applyPlugins)
+  bool RestApiPost(Json::Value& result,
+                   OrthancPluginContext* context,
+                   const std::string& uri,
+                   const Json::Value& body,
+                   bool applyPlugins)
+  {
+    Json::FastWriter writer;
+    return RestApiPost(result, context, uri, writer.write(body), applyPlugins);
+  }
+
+
+  bool RestApiPut(Json::Value& result,
+                  OrthancPluginContext* context,
+                  const std::string& uri,
+                  const char* body,
+                  size_t bodySize,
+                  bool applyPlugins)
   {
     MemoryBuffer answer(context);
     if (!answer.RestApiPut(uri, body, bodySize, applyPlugins))
@@ -793,6 +975,17 @@ namespace OrthancPlugins
       answer.ToJson(result);
       return true;
     }
+  }
+
+
+  bool RestApiPut(Json::Value& result,
+                   OrthancPluginContext* context,
+                   const std::string& uri,
+                   const Json::Value& body,
+                   bool applyPlugins)
+  {
+    Json::FastWriter writer;
+    return RestApiPut(result, context, uri, writer.write(body), applyPlugins);
   }
 
 
@@ -822,7 +1015,99 @@ namespace OrthancPlugins
     }
     else
     {
-      throw PluginException(error);
+      ORTHANC_PLUGINS_THROW_EXCEPTION(error);
+    }
+  }
+
+
+  static void ReportIncompatibleVersion(OrthancPluginContext* context,
+                                        unsigned int major,
+                                        unsigned int minor,
+                                        unsigned int revision)
+  {
+    char buf[128];
+    sprintf(buf, "Your version of the Orthanc core (%s) is too old to run this plugin (%d.%d.%d is required)",
+            context->orthancVersion, major, minor, revision);
+    OrthancPluginLogError(context, buf);
+  }
+
+
+  bool CheckMinimalOrthancVersion(OrthancPluginContext* context,
+                                  unsigned int major,
+                                  unsigned int minor,
+                                  unsigned int revision)
+  {
+    if (context == NULL)
+    {
+      OrthancPluginLogError(context, "Bad Orthanc context in the plugin");      
+      return false;
+    }
+
+    if (!strcmp(context->orthancVersion, "mainline"))
+    {
+      // Assume compatibility with the mainline
+      return true;
+    }
+
+    // Parse the version of the Orthanc core
+    int aa, bb, cc;
+    if ( 
+#ifdef _MSC_VER
+      sscanf_s
+#else
+      sscanf
+#endif
+      (context->orthancVersion, "%4d.%4d.%4d", &aa, &bb, &cc) != 3 ||
+      aa < 0 ||
+      bb < 0 ||
+      cc < 0)
+    {
+      throw false;
+    }
+
+    unsigned int a = static_cast<unsigned int>(aa);
+    unsigned int b = static_cast<unsigned int>(bb);
+    unsigned int c = static_cast<unsigned int>(cc);
+
+    // Check the major version number
+
+    if (a > major)
+    {
+      return true;
+    }
+
+    if (a < major)
+    {
+      ReportIncompatibleVersion(context, major, minor, revision);
+      return false;
+    }
+
+
+    // Check the minor version number
+    assert(a == major);
+
+    if (b > minor)
+    {
+      return true;
+    }
+
+    if (b < minor)
+    {
+      ReportIncompatibleVersion(context, major, minor, revision);
+      return false;
+    }
+
+    // Check the patch level version number
+    assert(a == major && b == minor);
+
+    if (c >= revision)
+    {
+      return true;
+    }
+    else
+    {
+      ReportIncompatibleVersion(context, major, minor, revision);
+      return false;
     }
   }
 }
