@@ -199,7 +199,7 @@ void logCwd()
 
 void replaceIllegalChars(char* text)
 {
-	for (int i = 0; i < strlen(text); i++)
+	for (size_t i = 0; i < strlen(text); i++)
 	{
 		switch (text[i])
 		{
@@ -381,38 +381,6 @@ ORTHANC_PLUGINS_API OrthancPluginErrorCode OnChangeCallback(OrthancPluginChangeT
 }
 
 
-ORTHANC_PLUGINS_API int32_t FilterIncomingHttpRequest(OrthancPluginHttpMethod  method,
-                                                      const char*              uri,
-                                                      const char*              ip,
-                                                      uint32_t                 headersCount,
-                                                      const char* const*       headersKeys,
-                                                      const char* const*       headersValues)
-{
-  uint32_t i;
-
-  if (headersCount > 0)
-  {
-    OrthancPluginLogInfo(context, "HTTP headers of an incoming REST request:");
-    for (i = 0; i < headersCount; i++)
-    {
-      char info[1024];
-      sprintf(info, "  %s: %s", headersKeys[i], headersValues[i]);
-      OrthancPluginLogInfo(context, info);
-    }
-  }
-
-  if (method == OrthancPluginHttpMethod_Get ||
-      method == OrthancPluginHttpMethod_Post)
-  {
-    return 1;  /* Allowed */
-  }
-  else
-  {
-    return 0;  /* Only allow GET and POST requests */
-  }
-}
-
-
 extern "C"
 {
 	ORTHANC_PLUGINS_API const char* OrthancPluginGetVersion()
@@ -478,7 +446,6 @@ extern "C"
 
 		OrthancPluginRegisterOnStoredInstanceCallback(context, OnStoredCallback);
 		OrthancPluginRegisterOnChangeCallback(context, OnChangeCallback);
-		OrthancPluginRegisterIncomingHttpRequestFilter(context, FilterIncomingHttpRequest);
 
 		/* Declare several properties of the plugin */
 		OrthancPluginLogWarning(context, "VPI Plugin: Declare properties");
