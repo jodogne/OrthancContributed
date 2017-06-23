@@ -27,3 +27,11 @@ Ruby and Ruby on Rails
 ----------------------
 
  * [Ruby gem](https://rubygems.org/gems/orthanc/versions/0.1.0) by Simon Rascovsky ("Client for the Orthanc DICOM server REST API").
+
+External documentations and user guides
+----------------------------------
+
+ * [Extending Orthanc with Postresql database](http://petctviewer.org/images/Extending_Orthanc_with%20_PostgreDB.pdf) by Ilan Tal – Salim Kanoun
+ * [DICOM connection setup user guide](http://www.petctviewer.org/images/QuickSetupGuide_Networking_DICOM.pdf) by Ilan Tal – Salim Kanoun
+
+
