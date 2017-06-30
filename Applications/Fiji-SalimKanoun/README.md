@@ -1,13 +1,12 @@
 Fiji/ImageJ Orthanc Plugin
 ==========================
 
-[Link to the original post](https://groups.google.com/d/msg/orthanc-users/zX5BgdqhISo/a69FSFYqAwAJ)
+[Link to the original post on 2017-06-30](https://groups.google.com/d/msg/orthanc-users/zX5BgdqhISo/a69FSFYqAwAJ)
 
 
 Hi everyone,
-We are pleased to announce the official release of 3 plugins to manage Orthanc services through Fiji/ImageJ.
-These plugins have been fully developed by Anousone Vongsalat (student at IUT-Informatique-Toulouse)  during an internship of 11 weeks in the Hospitals of Toulouse (France) : IUCT-Oncopole and CHU-Toulouse-Rangueil
 
+We are pleased to announce the official release of 3 plugins to manage Orthanc services through Fiji/ImageJ. These plugins have been fully developed by Anousone Vongsalat (student at IUT-Informatique-Toulouse) during an internship of 11 weeks in the Hospitals of Toulouse (France) : IUCT-Oncopole and CHU-Toulouse-Rangueil.
 
 These 3 plugins are :
 
@@ -20,8 +19,7 @@ These 3 plugins are :
 
 Additional documentation is available at http://petctviewer.org/index.php/feature/dicom-anonymization-and-sharing
 
-This anonymization service will be fully ready when the issue 46 in the bug tracker will be fixed in Orthanc Server since some tags still remain in the Orthanc 1.2.0 version. 
-We are in close connection with Orthanc/Osimis team and we want to publicly say that we REALLY enjoyed working with such a valuable team and really appreciate their support during our development.
+This anonymization service will be fully ready when the issue 46 in the bug tracker will be fixed in Orthanc Server since some tags still remain in the Orthanc 1.2.0 version. We are in close connection with Orthanc/Osimis team and we want to publicly say that we REALLY enjoyed working with such a valuable team and really appreciate their support during our development.
 
  * Query/Retrieve : This plugin handles orthanc queries and retrieve through Fiji/ImageJ (Studies and series level).
 Retrieve could be performed for one or multiple study/series in one request.
@@ -29,7 +27,6 @@ We also add an "History" option allowing you to search the history of a patient 
 of one selected patient.
 
  * Import : This plugin allows to recursively scan a whole folder (and subfolders) to send all dicom files to Orthanc server. This allow bulk import of large dataset of DICOMs to Orthanc server and is basically an Java translation of the Orthanc.py script import.
-
 
 All these plugins are distributed with the free and open source GPL licence version 3.
 The sources are available in Anousone's GitHub : https://github.com/anousv/
