@@ -28,8 +28,15 @@ Ruby and Ruby on Rails
 
  * [Ruby gem](https://rubygems.org/gems/orthanc/versions/0.1.0) by Simon Rascovsky ("Client for the Orthanc DICOM server REST API").
 
+Tools based upon Orthanc
+------------------------
+
+ * [DICOM tools built on Orthanc API in Java](https://github.com/salimkanoun/Orthanc_Tools) by Salim Kanoun.
+ * [GUI to edit the options of Orthanc](https://github.com/salimkanoun/Ortanc_Json_Editor) by Salim Kanoun, from the Free and Open Source PET/CT viewer projet.
+
+
 External documentations and user guides
-----------------------------------
+---------------------------------------
 
  * [Extending Orthanc with Postresql database](http://petctviewer.org/images/Extending_Orthanc_with%20_PostgreDB.pdf) by Ilan Tal – Salim Kanoun
  * [DICOM connection setup user guide](http://www.petctviewer.org/images/QuickSetupGuide_Networking_DICOM.pdf) by Ilan Tal – Salim Kanoun
