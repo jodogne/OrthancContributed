@@ -33,6 +33,7 @@ Tools based upon Orthanc
 
  * [DICOM tools built on Orthanc API in Java](https://github.com/salimkanoun/Orthanc_Tools) by Salim Kanoun.
  * [GUI to edit the options of Orthanc](https://github.com/salimkanoun/Ortanc_Json_Editor) by Salim Kanoun, from the Free and Open Source PET/CT viewer projet.
+ * [Upload and import study (files or zip file) to Orthanc](https://groups.google.com/forum/#!msg/orthanc-users/LHL4bsLDYP8/w2_iDtwhEgAJ;context-place=topic/orthanc-users/wwCII2uZDcQ) by Rana Asim Wajid.
 
 
 External documentations and user guides
