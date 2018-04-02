@@ -10,7 +10,7 @@ Mobile apps
 Docker
 ------
 
- * [**Official** container](https://hub.docker.com/u/jodogne/), and its [associated documentation](https://github.com/jodogne/OrthancDocker).
+ * [**Official** container](https://hub.docker.com/u/jodogne/), and its [associated documentation](http://book.orthanc-server.com/users/docker.html) in the Orthanc Book.
 
 Vagrant
 -------
