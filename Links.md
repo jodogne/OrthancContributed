@@ -11,13 +11,21 @@ Docker
 ------
 
  * [**Official** container](https://hub.docker.com/u/jodogne/), and its [associated documentation](http://book.orthanc-server.com/users/docker.html) in the Orthanc Book.
-
+ * [Osimis container](https://hub.docker.com/r/osimis/orthanc/), and its [associated documentation](https://osimis.atlassian.net/wiki/spaces/OKB/pages/26738689/How+to+use+osimis+orthanc+Docker+images).
+ 
 Vagrant
 -------
 
  * [By Chris Hafey](https://github.com/chafey/orthanc-vagrant)
  * [By Fernando Jose Serrano Garcia](https://github.com/fernandojsg/vagrant-orthanc)
- 
+
+Plugins
+-------
+
+ * [Orthanc-Explorer 2](https://github.com/sdoloris/orthanc-explorer-2) provided by S. Doloris, R. Mathonet, R. Pire, P. Mertes and M. Horman (students at [ULiège](https://uliege.be), Belgium)
+ * [Mongo-DB](https://github.com/Doc-Cirrus/orthanc-mongodb) provided by [Doc-Cirrus](https://www.doc-cirrus.com).
+ * [VPI Reveal](https://github.com/jodogne/OrthancContributed/tree/master/Plugins/orthancVPIRevealPlugin) provided by [VPI-reveal](http://www.vpireveal.com/) is  a plugin that stores the files on disk in a more friendly tree (Patient/Study/Series/Instance).
+
 Node.js
 -------
 
