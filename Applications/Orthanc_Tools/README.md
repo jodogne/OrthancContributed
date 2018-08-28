@@ -2,6 +2,7 @@
 DICOM tools built on Orthanc API in Java
 
 Detailled Documentation :  see Orthanc_Tools_Documentation.pdf, Anonymization_Guideline.pdf
+
 Compiled standalone app : https://github.com/salimkanoun/Orthanc_Tools/releases
 
 Features : 
