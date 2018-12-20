@@ -37,6 +37,11 @@ Ruby and Ruby on Rails
 ----------------------
 
  * [Ruby gem](https://rubygems.org/gems/orthanc/versions/0.1.0) by Simon Rascovsky ("Client for the Orthanc DICOM server REST API").
+ 
+ Python
+ ------
+ 
+ * [orthanc-rest-client](https://pypi.org/project/orthanc-rest-client/): Pypi package providing client for Orthanc DICOM server REST endpoints
 
 Tools based upon Orthanc
 ------------------------
