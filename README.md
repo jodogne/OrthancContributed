@@ -10,6 +10,7 @@ Organization of the folders
 
 * [`Links.md`](./Links.md): Index of various third-party contributions around the Internet.
 * `Applications/`: Contributed standalone applications, that use Orthanc through its REST API.
+* `Documentation/`: Documents, articles, posts... written by third-party contributors.
 * `Patches/`: Contributed patches to the Orthanc source distribution.
 * `Plugins/`: Contributed plugins for Orthanc.
 * `Scripts/`: Contributed sample scripts.
