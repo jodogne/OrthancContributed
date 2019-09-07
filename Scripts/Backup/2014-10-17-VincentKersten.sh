@@ -1,4 +1,15 @@
 #!/bin/bash
+
+##
+## Contribution by Vincent Kersten <vincent1234567@gmail.com>
+## (2014-10-17) on the Google Group of Orthanc Users.
+##
+## It is meant for use in cron, but you can also run in by
+## hand. Giving it any argument will give debugging info
+## (e.g. './orthanc-backup.sh debug')
+##
+
+
 [ $1 ] && set -xv
 
 # This tool does its best to shorten downtime on the database backup
