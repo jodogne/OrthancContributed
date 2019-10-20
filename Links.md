@@ -41,7 +41,7 @@ Ruby and Ruby on Rails
  Python
  ------
  
- * [orthanc-rest-client](https://pypi.org/project/orthanc-rest-client/): Pypi package providing client for Orthanc DICOM server REST endpoints
+ * [beren](https://pypi.org/project/beren/): Orthanc REST client in Python
 
 Tools based upon Orthanc
 ------------------------
