@@ -4,7 +4,7 @@ Useful Links for Orthanc
 Mobile apps
 -----------
 
- * ["Mobile DICOM viewers"](http://www.web3.lu/mobile-dicom-viewers/), post by Marco Barning testing which mobile apps for radiology are compatible with Orthanc.
+ * ["Mobile DICOM viewers"](http://www.web3.lu/mobile-dicom-viewers/), post by Marco Barnig testing which mobile apps for radiology are compatible with Orthanc.
 
 
 Docker
@@ -57,12 +57,13 @@ Tools based upon Orthanc
  * [Upload and import study (files or zip file) to Orthanc](https://groups.google.com/forum/#!msg/orthanc-users/LHL4bsLDYP8/w2_iDtwhEgAJ;context-place=topic/orthanc-users/wwCII2uZDcQ)
    by Rana Asim Wajid.
 
+ * [RadioLogic](https://github.com/mbarnig/RadioLogic) by Marco Barnig.  RadioLogic is a case-based learning and self-assessment tool for the Orthanc Ecosystem for Medical Imaging.
 
 External documentations and user guides
 ---------------------------------------
-
+   
  * [Swagger / OpenAPI specification for Orthanc](https://github.com/bastula/swagger-orthanc), draft by Aditya Panchal. [Link to forum](https://groups.google.com/d/msg/orthanc-users/y1t3XIc7aIc/AF-vy6cdEgAJ).
  * [Extending Orthanc with Postresql database](http://petctviewer.org/images/Extending_Orthanc_with%20_PostgreDB.pdf) by Ilan Tal – Salim Kanoun
  * [DICOM connection setup user guide](http://www.petctviewer.org/images/QuickSetupGuide_Networking_DICOM.pdf) by Ilan Tal – Salim Kanoun
  * [Orthanc setup on Synology](https://github.com/levinalex/orthanc-synology-ansible-example) using Ansible, by Levin Alexander.
-
+ * [RadioLogic - wiki](https://github.com/mbarnig/RadioLogic/wiki) by Marco Barnig.  Tons of useful info about how to use Orthanc, compile it and how to develop Orthanc plugins.
