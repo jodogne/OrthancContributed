@@ -1,4 +1,12 @@
 #!/bin/bash
+##
+## Contribution by Steve Hawes
+##
+## It is meant to migrate orthanc files from a FileSystem storage to
+## an Azure Blob Storage such that it can be used by the Orthanc Azure Blob Storage plugin.
+## The script adapts the file structure and naming from hierarchical (FileSystem)
+## to flat (Blob storage)
+##
 
 usage() {
   echo -e "Usage:\t$0 -s <source-path> -a <storage-account-name> -c <container-name> [-t <SASToken>] [-l <main|sub|off>]"
