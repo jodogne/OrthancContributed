@@ -58,6 +58,8 @@ Tools based upon Orthanc
    by Rana Asim Wajid.
 
  * [RadioLogic](https://github.com/mbarnig/RadioLogic) by Marco Barnig.  RadioLogic is a case-based learning and self-assessment tool for the Orthanc Ecosystem for Medical Imaging.
+ 
+ * [Orthanc Paper Scanner in Apache PHP](https://sourceforge.net/projects/orthanc-paperscanner-apachephp/). This project is "a paper scanning portal that gives the Orthanc Pacs server the ability to interface with twain/wia scanners and insert the resulting pdf into the Orthanc database using a web interface integrated into the Orthanc web console". Check out the [original announcement on the Orthanc Users discussion group](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/orthanc-users/k0CQ1f5eu84/z98izDJ8AQAJ).
 
 External documentations and user guides
 ---------------------------------------
