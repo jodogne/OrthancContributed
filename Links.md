@@ -38,10 +38,17 @@ Ruby and Ruby on Rails
 
  * [Ruby gem](https://rubygems.org/gems/orthanc/versions/0.1.0) by Simon Rascovsky ("Client for the Orthanc DICOM server REST API").
  
- Python
- ------
+Python
+------
  
  * [beren](https://pypi.org/project/beren/): Orthanc REST client in Python
+
+Rust
+----
+
+ * [orthanc-cli](https://github.com/Ch00k/orthanc-cli) is a command-line interface for Orthanc by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
+ * [orthanc-rs](https://github.com/Ch00k/orthanc-rs) is a Rust client library for the Orthanc REST API written by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
+
 
 Tools based upon Orthanc
 ------------------------
@@ -65,6 +72,7 @@ External documentations and user guides
 ---------------------------------------
    
  * [Swagger / OpenAPI specification for Orthanc](https://github.com/bastula/swagger-orthanc), draft by Aditya Panchal. [Link to forum](https://groups.google.com/d/msg/orthanc-users/y1t3XIc7aIc/AF-vy6cdEgAJ).
+   * 2020-12-30: This contribution is superseded by the [official OpenAPI](https://api.orthanc-server.com/) that is generated directly from the source code of Orthanc.
  * [Extending Orthanc with Postresql database](http://petctviewer.org/images/Extending_Orthanc_with%20_PostgreDB.pdf) by Ilan Tal – Salim Kanoun
  * [DICOM connection setup user guide](http://www.petctviewer.org/images/QuickSetupGuide_Networking_DICOM.pdf) by Ilan Tal – Salim Kanoun
  * [Orthanc setup on Synology](https://github.com/levinalex/orthanc-synology-ansible-example) using Ansible, by Levin Alexander.
