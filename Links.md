@@ -13,6 +13,7 @@ Docker
  * [**Official** container](https://hub.docker.com/u/jodogne/), and its [associated documentation](http://book.orthanc-server.com/users/docker.html) in the Orthanc Book.
  * [Osimis container](https://hub.docker.com/r/osimis/orthanc/), and its [associated documentation](https://osimis.atlassian.net/wiki/spaces/OKB/pages/26738689/How+to+use+osimis+orthanc+Docker+images).
  * [Cross-architecture orthanc container](https://hub.docker.com/r/derekmerck/orthanc/) and [Cross-architecture orthanc-plugins container](https://hub.docker.com/r/derekmerck/orthanc-plugins/) for `amd64`, `armhf`, and `aarch64`, and the [associated source code](https://github.com/derekmerck/docker-orthanc-xarch)
+ * [Lightweight cross-architecture orthanc container](https://hub.docker.com/r/scratchcat1/orthanc/) and [Lightweight cross-architecture orthanc-plugins container](https://hub.docker.com/r/scratchcat1/orthanc-plugins/) and the [associated source code](https://github.com/Scratchcat1/OrthancDocker) with images built for `amd64` and `armhf`. Updated Debian base and images can be built for any architecture.
  
  
 Vagrant
