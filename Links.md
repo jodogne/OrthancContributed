@@ -51,6 +51,12 @@ Rust
  * [orthanc-rs](https://github.com/Ch00k/orthanc-rs) is a Rust client library for the Orthanc REST API written by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
 
 
+Cloud
+-----
+
+ * [OrthWeb](https://github.com/digihunch/orthweb/) is "a medical imaging PoC deployment on Amazon Web Service based on Orthanc" by [Yi Lu](https://www.linkedin.com/in/digihunch/).
+
+
 Tools based upon Orthanc
 ------------------------
 
