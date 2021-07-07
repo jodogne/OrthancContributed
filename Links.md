@@ -15,6 +15,10 @@ Docker
  * [Cross-architecture orthanc container](https://hub.docker.com/r/derekmerck/orthanc/) and [Cross-architecture orthanc-plugins container](https://hub.docker.com/r/derekmerck/orthanc-plugins/) for `amd64`, `armhf`, and `aarch64`, and the [associated source code](https://github.com/derekmerck/docker-orthanc-xarch)
  * [Lightweight cross-architecture orthanc container](https://hub.docker.com/r/scratchcat1/orthanc/) and [Lightweight cross-architecture orthanc-plugins container](https://hub.docker.com/r/scratchcat1/orthanc-plugins/) and the [associated source code](https://github.com/Scratchcat1/OrthancDocker) with images built for `amd64` and `armhf`. Updated Debian base and images can be built for any architecture.
  
+Kubernetes
+----------
+
+ * [Korthweb](https://github.com/digihunch/korthweb/) is "a web deployment of Orthanc on Kubernetes (based on AWS EKS)" by [Yi Lu](https://www.linkedin.com/in/digihunch/).
  
 Vagrant
 -------
