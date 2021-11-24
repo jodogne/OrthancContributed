@@ -60,6 +60,7 @@ Cloud
 -----
 
  * [OrthWeb](https://github.com/digihunch/orthweb/) is "a medical imaging PoC deployment on Amazon Web Service based on Orthanc" by [Yi Lu](https://www.linkedin.com/in/digihunch/).
+ * [Orthanc deployment on AWS using AWS CDK](https://github.com/aws-samples/orthanc-cdk-deployment) is a project that "aims to help you provision a ready-to-use Orthanc cluster on Amazon ECS Fargate, with support for the official S3 plugin." It is written by [Tamas Santa](https://groups.google.com/g/orthanc-users/c/kpWCpplqI00/).
 
 
 Tools based upon Orthanc
