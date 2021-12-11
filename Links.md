@@ -19,7 +19,12 @@ Kubernetes
 ----------
 
  * [Korthweb](https://github.com/digihunch/korthweb/) is "a web deployment of Orthanc on Kubernetes (based on AWS EKS)" by [Yi Lu](https://www.linkedin.com/in/digihunch/).
- 
+
+Ansible
+-------
+
+ * The ["GNU Health Automatic Deployment" Ansible playbooks](https://gitlab.com/geraldwiese/gnuhealth-automatic-deployment) by Gerald Wiese aims "to automatically deploy the hospital information system GNU Health including the HMIS node, Thalamus, the DICOM server Orthanc and a desktop environment as a client using the GNU Health HMIS node."
+
 Vagrant
 -------
 
