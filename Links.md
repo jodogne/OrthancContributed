@@ -18,7 +18,7 @@ Docker
 Kubernetes
 ----------
 
- * [Korthweb](https://github.com/digihunch/korthweb/) is "a web deployment of Orthanc on Kubernetes (based on AWS EKS)" by [Yi Lu](https://www.linkedin.com/in/digihunch/).
+ * [Korthweb](https://github.com/digihunch/korthweb/) is a project by [Yi Lu](https://www.linkedin.com/in/digihunch/) for automated Orthanc deployment on Kubernetes platforms, with configurations for security and observability.
 
 Ansible
 -------
@@ -64,7 +64,7 @@ Rust
 Cloud
 -----
 
- * [OrthWeb](https://github.com/digihunch/orthweb/) is "a medical imaging PoC deployment on Amazon Web Service based on Orthanc" by [Yi Lu](https://www.linkedin.com/in/digihunch/).
+ * [OrthWeb](https://github.com/digihunch/orthweb/) is a project by by [Yi Lu](https://www.linkedin.com/in/digihunch/) for automated Orthanc deployment on AWS. It  provisions underlying cloud resources and configures Docker to host Orthanc on EC2 instance.
  * [Orthanc deployment on AWS using AWS CDK](https://github.com/aws-samples/orthanc-cdk-deployment) is a project that "aims to help you provision a ready-to-use Orthanc cluster on Amazon ECS Fargate, with support for the official S3 plugin." It is written by [Tamas Santa](https://groups.google.com/g/orthanc-users/c/kpWCpplqI00/).
  * [Research PACS on AWS](https://github.com/aws-samples/research-pacs-on-aws) is a project that "facilitates researchers to access medical images stored in the clinical PACS in a secure and seamless manner, after potentially identifying information is removeed, and allows medical images to be exported to Amazon S3 in order to leverage cloud capabilities for processing." It is written by [Nicolas Malaval](https://groups.google.com/g/orthanc-users/c/WqcbI8yGDSs/).
 
