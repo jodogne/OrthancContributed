@@ -74,7 +74,7 @@ Tools based upon Orthanc
 
  * [DICOM tools built on Orthanc API in Java](https://github.com/salimkanoun/Orthanc_Tools)
    by Salim Kanoun, from the Free and Open Source
-   [PET/CT viewer projet](http://petctviewer.org/).
+   [PET/CT viewer project](http://petctviewer.org/).
  
    * The GUI tool to edit the JSON configuration file of Orthanc that
      was previously a separated project is now part of the PET/CT

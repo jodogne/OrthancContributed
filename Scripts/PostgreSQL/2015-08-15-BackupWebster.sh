@@ -13,7 +13,7 @@
 # crontab will send output to the indicated
 # 30 0 * * * /Orthanc/scripts/pg_backup.bash >> /Orthanc/scripts/dbbackup.log 2>&1
 #
-# Files should be placed at /Orthanc/scripts and execute privilage added
+# Files should be placed at /Orthanc/scripts and execute privilege added
 # e.g. chmod +x pg_backup.bash
 #
 logfile=/Orthanc/scripts/dbbackup.log     # => This must be the same as the crontab entry
@@ -38,7 +38,7 @@ echo  " ($outfilesize) "
 done
 
 # Delete old backups and trim the backup log file
-echo " –> Deleteing backups older than $number_of_days days "
+echo " –> Deleting backups older than $number_of_days days "
 find $backup_dir -type f -prune -mtime +$number_of_days -exec rm -f {} \;
 # finish time
 echo [`date`] PostgreSQL backup END `date`
