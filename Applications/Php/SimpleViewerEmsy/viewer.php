@@ -119,7 +119,7 @@ function drawSlice(s, windowCenterAdj, windowWidthAdj, panX, panY, zoom) {
 	baseX = baseX + panX; // for panning
 	baseY = baseY + panY; 
 	
-	//my simple windowing algoritm because image data-string is 12-bit. HTML5 canvas is 8-bit (grayscale). Algorithm needed to parse 12-bit depth into 8-bit depth. An approximate windowCenter adjustment of 1020 to match CT HUs.
+	//my simple windowing algorithm because image data-string is 12-bit. HTML5 canvas is 8-bit (grayscale). Algorithm needed to parse 12-bit depth into 8-bit depth. An approximate windowCenter adjustment of 1020 to match CT HUs.
 	windowCenter = windowCenter + windowCenterAdj;
 	windowWidth = windowWidth + windowWidthAdj; 
 	var low = (windowCenter + 1020) - (windowWidth / 2); 
@@ -332,7 +332,7 @@ function mouseWheel(evt) {
 
 function mouseDownListener(evt) {
 		whichButton =  evt.which;
-		//getting mouse position correctly, being mindful of resizing that may have occured in the browser:
+		//getting mouse position correctly, being mindful of resizing that may have occurred in the browser:
 		var bRect = canvas.getBoundingClientRect();
 		mouseX = (evt.clientX - bRect.left)*(canvas.width/bRect.width);
 		mouseY = (evt.clientY - bRect.top)*(canvas.height/bRect.height);

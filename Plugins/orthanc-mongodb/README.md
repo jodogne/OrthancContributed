@@ -25,7 +25,7 @@ yum -y install gcc gcc-c++ devtoolset-4 cmake boost-devel libuuid-devel openssl-
 ```
 
 ## Prerequisite: Orthanc 1.2.0
-Its not nessesary to build Orthanc, if you have orthanc-devel packages installed. At the moment there exists no package for Orthanc 1.2.0 in any offical repository for CentOS 6.
+Its not necessary to build Orthanc, if you have orthanc-devel packages installed. At the moment there exists no package for Orthanc 1.2.0 in any official repository for CentOS 6.
 ```bash
 yum -y install python curl-devel dcmtk-devel gtest-devel jsoncpp-devel libjpeg-devel libpng-devel sqlite-devel lua-devel >= 5.1.0 mongoose-devel openssl-devel pugixml-devel
 curl -L --output Orthanc-1.2.0.tar.gz http://www.orthanc-server.com/downloads/get.php?path=/orthanc/Orthanc-1.2.0.tar.gz
