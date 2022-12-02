@@ -89,6 +89,10 @@ Tools based upon Orthanc
 
  * https://github.com/sscotti/PACS_Integration
 
+ * [Longitudinal Anonymization](https://github.com/HDVUCAIR/OrthancContribution).  A collection of bash, Lua, and Python scripts to launch a constellation of Orthanc/PostGreSQL servers using docker-compose for performing longitudinal anonymization of patient/studies.
+   * Studies are internally consistent in that all UID are replaced with anonymized UID, but references/links between series are retained.
+   * Relative times between studies for the same patient are retained, but the dates are randomly shifted up to 365 days.  One random shift is generated per patient for all their studies.
+
 External documentations and user guides
 ---------------------------------------
    
