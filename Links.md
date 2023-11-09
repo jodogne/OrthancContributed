@@ -53,6 +53,7 @@ Python
  
  * [beren](https://pypi.org/project/beren/): Orthanc REST client in Python
  * [orthanc-server-extensions](https://github.com/walkIT-nl/orthanc-server-extensions/): A simple Orthanc python plugin based framework to extend Orthanc’s feature set with testable python scripts
+ * [Orthanc Plugin Scripts](https://github.com/mohannadhussain/orthanc-plugin-scripts): A collection of Orthanc plugins, written in Python, to add miscellaneous functionality, by [Mohannad Hussain](https://www.linkedin.com/in/mohannadhussain/).
 
 Rust
 ----
