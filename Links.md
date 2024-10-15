@@ -61,6 +61,10 @@ Rust
  * [orthanc-cli](https://github.com/Ch00k/orthanc-cli) is a command-line interface for Orthanc by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
  * [orthanc-rs](https://github.com/Ch00k/orthanc-rs) is a Rust client library for the Orthanc REST API written by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
 
+PHP
+---
+
+ * [PHP API Client for Orthanc](https://github.com/aurabx/orthancphp) by [christopher.skene](https://discourse.orthanc-server.org/t/php-client-library/5249).
 
 Cloud
 -----
