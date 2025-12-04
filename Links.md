@@ -19,6 +19,7 @@ Kubernetes
 ----------
 
  * [Korthweb](https://github.com/digihunch/korthweb/) is a project by [Yi Lu](https://www.linkedin.com/in/digihunch/) for automated Orthanc deployment on Kubernetes platforms, with configurations for security and observability.
+ * [fnndsc/orthanc](https://github.com/FNNDSC/charts/tree/master/charts/orthanc) is a Helm Chart for Orthanc optimized for Red Hat OpenShift and CRDs common to it, such as [Crunchy PGO](https://github.com/CrunchyData/postgres-operator). It supports configuration of `Orthanc.json` as Helm YAML values and integration with [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/).
 
 Ansible
 -------
@@ -37,6 +38,7 @@ Plugins
  * [Orthanc-Explorer 2](https://github.com/sdoloris/orthanc-explorer-2) provided by S. Doloris, R. Mathonet, R. Pire, P. Mertes and M. Horman (students at [ULiège](https://uliege.be), Belgium)
  * [Mongo-DB](https://github.com/Doc-Cirrus/orthanc-mongodb) provided by [Doc-Cirrus](https://www.doc-cirrus.com).
  * [VPI Reveal](https://github.com/jodogne/OrthancContributed/tree/master/Plugins/orthancVPIRevealPlugin) provided by [VPI-reveal](http://www.vpireveal.com/) is  a plugin that stores the files on disk in a more friendly tree (Patient/Study/Series/Instance).
+ * [orthanc-patient-list](https://github.com/FNNDSC/orthanc-patient-list) provided by [FNNDSC](https://fnndsc.org) shows a list of patients (instead of listing studies).
 
 Node.js
 -------
@@ -61,6 +63,7 @@ Rust
 
  * [orthanc-cli](https://github.com/Ch00k/orthanc-cli) is a command-line interface for Orthanc by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
  * [orthanc-rs](https://github.com/Ch00k/orthanc-rs) is a Rust client library for the Orthanc REST API written by [Andrii Yurchuk](https://groups.google.com/g/orthanc-users/c/dfIV8IKLJNg/m/eQBGSEGACgAJ).
+ * [orthanc_sdk](https://crates.io/crates/orthanc_sdk) is a (WIP) create for building Orthanc plugins in Rust, with focus on idiomatic code and memory safety.
 
 PHP
 ---
