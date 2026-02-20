@@ -58,6 +58,11 @@ Python
  * [Orthanc Plugin Scripts](https://github.com/mohannadhussain/orthanc-plugin-scripts): A collection of Orthanc plugins, written in Python, to add miscellaneous functionality, by [Mohannad Hussain](https://www.linkedin.com/in/mohannadhussain/).
  * [PyOrthanc](https://github.com/gacou54/pyorthanc): An open-source Python library that provides a comprehensive interface for interacting with Orthanc, by [Gabriel Couture](https://github.com/gacou54/).
 
+R
+-
+
+ * [orthanc for R](https://mattwarkentin.github.io/orthanc/) by Matthew T. Warkentin is an R package that "provides a programmatic interface to Orthanc DICOM Servers to support medical imaging workflows for the R language."
+
 Rust
 ----
 
